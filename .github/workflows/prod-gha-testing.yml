@@ -1,0 +1,27 @@
+name: Prod GHA Testing
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        type: choice
+        description: Who to greet
+        options:
+        - monalisa
+        - cschleiden
+      message:
+        required: true
+        type: string
+        description: a message to include in the greeting
+      use-emoji:
+              type: boolean
+              description: Include 🎉🤣 emojis
+      environment:
+        type: environment
+        description: The environment to deploy to
+jobs:
+  greet:
+    if: github.event_name !== 'workflow_dispatch' || github.ref !== 'refs/heads/production'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Send greeting
+      run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", "🥳"]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
